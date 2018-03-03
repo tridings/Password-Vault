@@ -6,7 +6,6 @@ from getpass import getpass
 from bcrypt import hashpw, gensalt
 import yaml
 
-userAccountList = []
 filePath = "/home/mint/scripts/python/etc/myYamlFile.yaml"
 
 def yaml_loader(filepath):
@@ -15,14 +14,20 @@ def yaml_loader(filepath):
         data = yaml.load(file_descriptor)
     return data
 
+
+
 def yaml_query(filepath, request):
     queryResult = yaml_loader(filepath)[request]
     return queryResult
+
+
 
 def yaml_dump(filepath, data):
     # Dumps data to a yaml file
     with open(filepath, "w") as file_descriptor:
         yaml.dump(data, file_descriptor)
+
+
 
 def account_authenticate():
     record= yaml_loader(filePath)
@@ -60,6 +65,8 @@ def account_authenticate():
         elif choice == "no":
             exit()
  
+
+
 def passwordRecordCreate(type, username):
     choice = "yes"
     while choice == "yes":
@@ -80,15 +87,21 @@ def passwordRecordCreate(type, username):
         choice = raw_input(["Would you like to enter another password? (yes/no)"])
 
 
+
+
 def passwordRecordRetrieve(type):
     accountTypes = yaml_query(filePath, username)
     option = raw_input(["Please enter one of these account passwords that you'd like : %s" % accountTypes])
     retrievedPassword = list_doc[option]['password']
     addToClipBoard(retrievedPassword)
 
+
+
 def addToClipBoard(text):
     command = 'echo ' + text.strip() + '| clip'
     os.system(command)
+
+
 
 def create_account(username):
     choice = raw_input(["Would you like to use the username you typed before? (yes/no)"])
@@ -106,7 +119,6 @@ def create_account(username):
     if hashed == hashedCheck:  
         print "Passwords match"
         userPassword = hashed
-        # userAccountList.append(newUsername)
         data = {
             "accounts":{
                 newUsername:{
@@ -123,7 +135,11 @@ def create_account(username):
         match = "no" 
         exit()  
 
+
+
 def main():
     account_authenticate()
+
+
 
 main()
