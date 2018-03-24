@@ -1,3 +1,3 @@
 accounts:
-  tanner: {password: $2b$12$TrcsJ/0el27x39HzFHnY9OMy3Rou/hCEi10DBna8HG41utvFdxayK,
-    salt: $2b$12$TrcsJ/0el27x39HzFHnY9O}
+  grant: {password: $2b$12$amGmQgoQTU1bxOItqqoA/etVkkQiMbN3VxQKHhE7pnNOzrIp6LdFu,
+    salt: $2b$12$amGmQgoQTU1bxOItqqoA/e}

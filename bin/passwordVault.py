@@ -29,6 +29,12 @@ def yaml_dump(filepath, data):
 
 
 
+def merge_two_dicts(x, y):
+    z = x.copy()   # start with x's keys and values
+    z.update(y)    # modifies z with y's keys and values & returns None
+    yaml_dump(filePath, z)
+
+
 def account_authenticate():
     record= yaml_loader(filePath)
     username = raw_input(["Please enter username..."])
@@ -43,7 +49,7 @@ def account_authenticate():
             while valid == False:                 
                 choice = raw_input(["Would you like to enter a new password record or retrieve a password? (ENTER/RETRIEVE) Or enter EXIT to quit the program"])
                 if choice == "ENTER":
-                    # passwordRecordCreate(choice, username)
+                    #passwordRecordCreate(choice, username)
                     valid = True
                 elif choice == "RETRIEVE":
                     # passwordRecordRetrieve(choice, username)
@@ -67,10 +73,45 @@ def account_authenticate():
  
 
 
+def create_account(username):
+    original = yaml_loader(filePath)
+    choice = raw_input(["Would you like to use the username you typed before? (yes/no)"])
+    if choice == "yes":
+        newUsername = username
+    else:
+        newUsername = raw_input(["Please enter new username..."])
+    plainTextPassword = getpass(["Please enter new password..."])
+    salt = gensalt()
+    hashed = hashpw(plainTextPassword, salt)
+    plainTextPasswordCheck = getpass(["Please reenter new password..."])
+    hashedCheck = hashpw(plainTextPasswordCheck, salt)
+    # match = "no"
+    # while match == "no":
+    if hashed == hashedCheck:  
+        print "Passwords match"
+        userPassword = hashed
+        update = {
+            "accounts":{
+                newUsername:{
+                    "password": userPassword,
+                    "salt": salt
+                }
+            }
+        }
+        merge_two_dicts(original, update)
+        # yaml_dump(filePath, data)
+        match = "yes"
+    else:
+        print "Passwords do not match"
+        match = "no" 
+        exit()  
+
+
+
 def passwordRecordCreate(type, username):
-    choice = "yes"
-    while choice == "yes":
-        yaml_loader(filePath)
+    d1 = yaml_loader(filePath)
+    print d1
+    while choice == "yes":        
         title = raw_input(["Please enter the title of the password you would like to store... (example: facebook, gmail, ect..."])
         password = getpass(["Please enter password for %s..." % title])
         data = {
@@ -88,7 +129,6 @@ def passwordRecordCreate(type, username):
 
 
 
-
 def passwordRecordRetrieve(type):
     accountTypes = yaml_query(filePath, username)
     option = raw_input(["Please enter one of these account passwords that you'd like : %s" % accountTypes])
@@ -100,41 +140,6 @@ def passwordRecordRetrieve(type):
 def addToClipBoard(text):
     command = 'echo ' + text.strip() + '| clip'
     os.system(command)
-
-
-
-def create_account(username):
-    choice = raw_input(["Would you like to use the username you typed before? (yes/no)"])
-    if choice == "yes":
-        newUsername = username
-    else:
-        newUsername = raw_input(["Please enter new username..."])
-    plainTextPassword = getpass(["Please enter new password..."])
-    salt = gensalt()
-    hashed = hashpw(plainTextPassword, salt)
-    plainTextPasswordCheck = getpass(["Please reenter new password..."])
-    hashedCheck = hashpw(plainTextPasswordCheck, salt)
-    # match = "no"
-    # while match == "no":
-    if hashed == hashedCheck:  
-        print "Passwords match"
-        userPassword = hashed
-        data = {
-            "accounts":{
-                newUsername:{
-                    "password": hashed,
-                    "salt": salt
-                }
-            }
-        }
-        yaml_loader(filePath)
-        yaml_dump(filePath, data)
-        match = "yes"
-    else:
-        print "Passwords do not match"
-        match = "no" 
-        exit()  
-
 
 
 def main():
